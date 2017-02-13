@@ -85,10 +85,15 @@ function eatDot() {
 }
 
 function eatGhost(ghost) {
-    if (ghost.edible === false) {
+  if (ghost.edible === false) {
     lives -= 1;
     console.log("\nKilled by " + ghost.name + " who is coloured " + ghost.colour + "!");
     checkLives(lives)
+  }
+  else {
+    score += 200;
+    console.log("Ate " + ghost.name + "!");
+    ghost.edible = false;
   }
 }
 
