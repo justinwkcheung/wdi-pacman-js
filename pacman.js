@@ -82,6 +82,14 @@ function eatGhost(ghost) {
     if (ghost.edible === false) {
     lives -= 1;
     console.log("\nKilled by " + ghost.name + " who is coloured " + ghost.colour + "!");
+    checkLives(lives)
+  }
+}
+
+function checkLives(lives) {
+  if (lives < 0) {
+    console.log("You are dead, ba boo beep, ba ba boo beep");
+    process.exit();
   }
 }
 
