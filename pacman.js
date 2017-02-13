@@ -3,6 +3,7 @@ var score = 0;
 var lives = 2;
 var powerPellets = 4;
 var dots = 240;
+var ghosts_eaten = 0
 
 
 // Define your ghosts here
@@ -56,7 +57,7 @@ function clearScreen() {
 }
 
 function displayStats() {
-  console.log('Score: ' + score + '     Lives: ' + lives + '      Dots: ' + dots);
+  console.log('Score: ' + score + '     Lives: ' + lives + '      Dots: ' + dots + "     Ghosts eaten:" + ghosts_eaten);
   if (powerPellets > 0) {
     console.log('Power-Pellets: ' + powerPellets);
   }
@@ -113,13 +114,31 @@ function eatGhost(ghost) {
   if (ghost.edible === false) {
     lives -= 1;
     console.log("\nKilled by " + ghost.name + " who is coloured " + ghost.colour + "!");
-    checkLives(lives)
+    checkLives(lives);
   }
   else {
-    score += 200;
+    switch(ghosts_eaten) {
+      case 0:
+        score += 200;
+        ghosts_eaten += 1;
+        break;
+      case 1:
+        score += 400;
+        ghosts_eaten += 1;
+        break;
+      case 2:
+        score += 800;
+        ghosts_eaten += 1;
+        break;
+      case 3:
+        score += 1600;
+        ghosts_eaten;
+        break; 
+      }
     console.log("Ate " + ghost.name + "!");
     ghost.edible = false;
-  }
+    }
+
 }
 
 function checkLives(lives) {
