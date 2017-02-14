@@ -3,8 +3,13 @@ var score = 0;
 var lives = 2;
 var powerPellets = 4;
 var dots = 240;
-var ghosts_eaten = 0
-
+var ghosts_eaten = 0;
+var level = 1;
+var randomNumber = 0;
+var fruit = false;
+var fruit_eaten = false;
+var fruits = ['cherry', 'strawberry', 'orange', 'orange', 'apple', 'apple', 'pineapple', 'pineapple', 'galaxian spaceship', 'galaxian spaceship', 'bell', 'bell', 'key', 'key']
+var points = [100, 300, 500, 500, 700, 700, 1000, 1000, 2000, 2000, 3000, 3000, 5000, 5000]
 
 // Define your ghosts here
 var inky = {
@@ -57,10 +62,10 @@ function clearScreen() {
 }
 
 function displayStats() {
-  console.log('Score: ' + score + '     Lives: ' + lives + '      Dots: ' + dots + "     Ghosts eaten:" + ghosts_eaten);
-  if (powerPellets > 0) {
-    console.log('Power-Pellets: ' + powerPellets);
-  }
+  console.log('Score: ' + score + '     Lives: ' + lives + '      Dots: ' + dots + "     Ghosts eaten:" + ghosts_eaten + "    Level: " + level );
+
+  console.log('Power-Pellets: ' + powerPellets);
+
 }
 
 function displayMenu() {
@@ -68,9 +73,16 @@ function displayMenu() {
   console.log('(d) Eat Dot');
   console.log('(t) Eat 10 Dots');
   console.log('(h) Eat 100 Dots');
-
+  if (dots < randomNumber && fruit_eaten === false) {
+  fruit = true;
+  console.log('(f) Eat ' + fruits[level-1]);
+  }
+  else if (fruit_eaten === true) {
+    console.log('No more of the ' + fruits[level-1] + " fruit");
+  }
+  if (powerPellets > 0) {
   console.log('(p) Eat Power-Pellet');
-
+  }
   for (var i = 1; i <= ghosts.length; i++) {
   console.log('(' + i + ')' + ' Eat ' + ghosts[i-1].name + ' (' + displayEdible(ghosts[i-1]) + ')');
   }
@@ -91,24 +103,55 @@ var displayEdible = function(ghost) {
   }
 }
 
+function checkLevel() {
+  if (level === 1 && randomNumber === 0) {
+    randomNumber = formRandomNumber(1, 240);
+  }
+  else if (powerPellets === 0 && dots === 0) {
+    level += 1;
+    powerPellets = 4;
+    dots = 240;
+    fruit_eaten = false;
+  }
+}
+
+function formRandomNumber (min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+
 // Menu Options
+function eatFruit() {
+  console.log('\nYum Fruit');
+  score += points[level-1];
+  fruit = false;
+  fruit_eaten = true;
+}
+
 function eatDot() {
   console.log('\nChomp!');
   score += 10;
   dots -= 1;
+  checkLevel()
 }
 
 function eatTenDots() {
   console.log('\nChomp 10!');
   score += 100;
   dots -= 10;
+  checkLevel()
 }
 
 function eatHundredDots() {
   console.log('\nChomp 100!');
   score += 1000;
   dots -= 100;
+  checkLevel()
 }
+
 
 function eatGhost(ghost) {
   if (ghost.edible === false) {
@@ -133,7 +176,8 @@ function eatGhost(ghost) {
       case 3:
         score += 1600;
         ghosts_eaten;
-        break; 
+        ghosts_eaten = 0;
+        break;
       }
     console.log("Ate " + ghost.name + "!");
     ghost.edible = false;
@@ -154,6 +198,7 @@ function eatPowerPellet() {
   for (var i = 0; i < ghosts.length; i++) {
     ghosts[i].edible = true;
   }
+  checkLevel();
 }
 
 // Process Player's Input
@@ -164,19 +209,33 @@ function processInput(key) {
       process.exit();
       break;
     case 'd':
+      if (dots > 0) {
       eatDot();
+      }
+      else {
+        console.log('\nNo more dots to eat!');
+      }
       break;
     case 't':
-      if (dots >= 10)
+      if (dots >= 10) {
         eatTenDots();
-      else
+      }
+      else {
         console.log('\nNot enough dots to eat 10 at once!');
+      }
       break;
     case 'h':
-      if (dots >= 100)
+      if (dots >= 100) {
         eatHundredDots();
-      else
+      }
+      else {
         console.log('\nNot enough dots to eat 100 at once!');
+      }
+      break;
+    case 'f':
+      if (fruit === true) {
+        eatFruit()
+      }
       break;
     case 'p':
       if (powerPellets === 0) {
